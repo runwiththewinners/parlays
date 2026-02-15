@@ -8,7 +8,7 @@ export const PRODUCTS = {
 } as const;
 
 // Your Whop company ID (find it in your dashboard URL: whop.com/dashboard/biz_xxxxxxxxx)
-export const COMPANY_ID = "biz_xxxxxxxxxxxxxxxxx"; // Replace with your actual company ID
+export const COMPANY_ID = "biz_KfwlM1WObd2QW6"; // Replace with your actual company ID
 
 // These tiers can see straight bet plays
 export const PREMIUM_TIERS = [PRODUCTS.PREMIUM, PRODUCTS.HIGH_ROLLERS];
