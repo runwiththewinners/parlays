@@ -1030,8 +1030,8 @@ export default function StraightBetsClient({
               team: playData.team,
               odds: playData.odds,
               sport: playData.sport,
-              experienceId: userAccess.experienceId,
-              companyId: "biz_KfwlM1WObd2QW6",
+              // Add your experience_id or company_id here
+              // experienceId: "exp_xxxxxxxx",
             }),
           });
         } catch (err) {
@@ -1157,7 +1157,7 @@ export default function StraightBetsClient({
                   marginBottom: 2,
                 }}
               >
-                FLAREGOTLOCKS • PARLAY
+                FLAREGOTLOCKS • STRAIGHT BET
               </div>
               <div
                 style={{
@@ -1243,6 +1243,8 @@ export default function StraightBetsClient({
               marginBottom: 4,
             }}
           >
+            <span style={{ color: "#f5f5f5" }}>Straight</span>
+            <br />
             <span
               style={{
                 background:
@@ -1251,7 +1253,7 @@ export default function StraightBetsClient({
                 WebkitTextFillColor: "transparent",
               }}
             >
-              Parlays
+              Bets
             </span>
           </h1>
 
@@ -1264,7 +1266,7 @@ export default function StraightBetsClient({
               lineHeight: 1.6,
             }}
           >
-            Every parlay, posted live.
+            Every straight bet play, posted live.
           </p>
         </div>
 
