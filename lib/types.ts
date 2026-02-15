@@ -33,6 +33,7 @@ export interface Play {
   postedAt: string;
   units: number;
   createdAt: number;
+  slipImage?: string;
 }
 
 export interface UserAccess {

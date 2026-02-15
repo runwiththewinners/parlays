@@ -72,10 +72,12 @@ const RESULT_STYLES: Record<
 function PlayCard({
   play,
   onUpdateResult,
+  onDelete,
   isAdmin,
 }: {
   play: Play;
   onUpdateResult: (id: string, result: BetResult) => void;
+  onDelete: (id: string) => void;
   isAdmin: boolean;
 }) {
   const result = RESULT_STYLES[play.result] || RESULT_STYLES.pending;
@@ -219,6 +221,52 @@ function PlayCard({
           </div>
         </div>
 
+        {/* Bet Slip Image */}
+        {play.slipImage && (
+          <div
+            style={{
+              margin: "14px 0",
+              borderRadius: 12,
+              overflow: "hidden",
+              border: "1px solid rgba(212,168,67,0.15)",
+              background: "rgba(0,0,0,0.3)",
+              position: "relative",
+            }}
+          >
+            <span
+              style={{
+                position: "absolute",
+                top: 8,
+                left: 8,
+                fontFamily: "'Oswald', sans-serif",
+                fontSize: 9,
+                fontWeight: 600,
+                letterSpacing: 1.5,
+                textTransform: "uppercase",
+                color: "#d4a843",
+                background: "rgba(0,0,0,0.7)",
+                backdropFilter: "blur(8px)",
+                padding: "4px 10px",
+                borderRadius: 6,
+                border: "1px solid rgba(212,168,67,0.2)",
+              }}
+            >
+              📸 Bet Slip
+            </span>
+            <img
+              src={play.slipImage}
+              alt="Bet slip"
+              style={{
+                width: "100%",
+                display: "block",
+                maxHeight: 220,
+                objectFit: "contain",
+                background: "#111",
+              }}
+            />
+          </div>
+        )}
+
         {/* Matchup */}
         <div
           style={{
@@ -292,6 +340,34 @@ function PlayCard({
             ))}
           </div>
         )}
+
+        {/* Admin delete button */}
+        {isAdmin && (
+          <div style={{ marginTop: 8 }}>
+            <button
+              onClick={() => {
+                if (confirm("Delete this play?")) onDelete(play.id);
+              }}
+              style={{
+                width: "100%",
+                padding: "8px 0",
+                borderRadius: 8,
+                border: "1px solid rgba(239,68,68,0.2)",
+                background: "rgba(239,68,68,0.06)",
+                color: "#ef4444",
+                fontSize: 11,
+                fontFamily: "'Oswald', sans-serif",
+                fontWeight: 700,
+                letterSpacing: 2,
+                textTransform: "uppercase",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+              }}
+            >
+              🗑 Delete Play
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -300,9 +376,6 @@ function PlayCard({
 // ─── Paywall Card ────────────────────────────────────────────────
 function PaywallCard({ play }: { play: Play }) {
   const handleUpgrade = () => {
-    // Inside Whop iframe, post message to parent for navigation
-    // When iframe SDK is integrated, replace with:
-    // iframeSdk.inAppPurchase({ planId: "plan_xxx", id: "ch_xxx" })
     window.parent.postMessage(
       { type: "whop:navigate", productId: "prod_o1jjamUG8rP8W" },
       "*"
@@ -530,6 +603,7 @@ function AdminPanel({
       time,
       sport,
       units: parseFloat(units) || 1,
+      slipImage: scanPreview || undefined,
     });
     setTeam("");
     setOdds("");
@@ -553,52 +627,17 @@ function AdminPanel({
       const mediaType = file.type || "image/png";
 
       try {
-        const response = await fetch("https://api.anthropic.com/v1/messages", {
+        const response = await fetch("/api/scan", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "claude-sonnet-4-20250514",
-            max_tokens: 1000,
-            messages: [
-              {
-                role: "user",
-                content: [
-                  {
-                    type: "image",
-                    source: {
-                      type: "base64",
-                      media_type: mediaType,
-                      data: base64Data,
-                    },
-                  },
-                  {
-                    type: "text",
-                    text: `You are reading a sportsbook bet slip screenshot. Extract the following fields and respond ONLY with a JSON object, no markdown, no backticks, no explanation:
-
-{
-  "team": "The pick/team and spread or line, e.g. 'Duke -9.5' or 'Lakers ML'",
-  "betType": "One of: SPREAD, MONEYLINE, OVER/UNDER, ALTERNATE SPREAD, PLAYER PROP, FIRST HALF SPREAD, FIRST HALF ML, GAME TOTAL",
-  "odds": "The odds e.g. '-192' or '+150'",
-  "matchup": "Away team @ Home team, e.g. 'Clemson @ Duke'",
-  "time": "Game time if visible, e.g. '8:00PM ET', or 'TBD' if not shown",
-  "sport": "One of: NCAAB, NBA, NFL, NCAAF, NHL, MLB, Soccer, UFC, Tennis"
-}
-
-Be precise. Use the exact team names shown.`,
-                  },
-                ],
-              },
-            ],
-          }),
+          body: JSON.stringify({ imageData: base64Data, mediaType }),
         });
 
         const data = await response.json();
-        const text =
-          data.content
-            ?.map((b: any) => (b.type === "text" ? b.text : ""))
-            .join("") || "";
-        const clean = text.replace(/```json|```/g, "").trim();
-        const parsed = JSON.parse(clean);
+        if (!data.success || !data.result) {
+          throw new Error(data.error || "Scan failed");
+        }
+        const parsed = data.result;
 
         if (parsed.team) setTeam(parsed.team);
         if (parsed.betType) setBetType(parsed.betType);
@@ -1002,7 +1041,6 @@ export default function StraightBetsClient({
 
   useEffect(() => {
     fetchPlays();
-    // Poll for new plays every 30 seconds
     const interval = setInterval(fetchPlays, 30000);
     return () => clearInterval(interval);
   }, [fetchPlays]);
@@ -1030,8 +1068,6 @@ export default function StraightBetsClient({
               team: playData.team,
               odds: playData.odds,
               sport: playData.sport,
-              experienceId: userAccess.experienceId,
-              companyId: "biz_KfwlM1WObd2QW6",
             }),
           });
         } catch (err) {
@@ -1063,6 +1099,22 @@ export default function StraightBetsClient({
       }
     } catch (err) {
       console.error("Error updating result:", err);
+    }
+  };
+
+  // Delete play
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch("/api/plays", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      if (res.ok) {
+        setPlays((prev) => prev.filter((p) => p.id !== id));
+      }
+    } catch (err) {
+      console.error("Error deleting play:", err);
     }
   };
 
@@ -1157,7 +1209,7 @@ export default function StraightBetsClient({
                   marginBottom: 2,
                 }}
               >
-                FLAREGOTLOCKS • PARLAY
+                FLAREGOTLOCKS • STRAIGHT BET
               </div>
               <div
                 style={{
@@ -1243,6 +1295,8 @@ export default function StraightBetsClient({
               marginBottom: 4,
             }}
           >
+            <span style={{ color: "#f5f5f5" }}>Straight</span>
+            <br />
             <span
               style={{
                 background:
@@ -1251,7 +1305,7 @@ export default function StraightBetsClient({
                 WebkitTextFillColor: "transparent",
               }}
             >
-              Parlays
+              Bets
             </span>
           </h1>
 
@@ -1264,7 +1318,7 @@ export default function StraightBetsClient({
               lineHeight: 1.6,
             }}
           >
-            Every parlay, posted live.
+            Every straight bet play, posted live.
           </p>
         </div>
 
@@ -1444,6 +1498,7 @@ export default function StraightBetsClient({
                     key={play.id}
                     play={play}
                     onUpdateResult={handleUpdateResult}
+                    onDelete={handleDelete}
                     isAdmin={isAdmin}
                   />
                 ))
@@ -1507,6 +1562,7 @@ export default function StraightBetsClient({
                         key={play.id}
                         play={play}
                         onUpdateResult={handleUpdateResult}
+                        onDelete={handleDelete}
                         isAdmin={isAdmin}
                       />
                     ))}
