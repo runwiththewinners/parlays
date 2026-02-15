@@ -4,7 +4,7 @@ import { PRODUCTS, COMPANY_ID } from "@/lib/constants";
 import type { UserAccess } from "@/lib/types";
 import StraightBetsClient from "@/components/StraightBetsClient";
 
-async function getUserAccess(): Promise<UserAccess> {
+async function getUserAccess(experienceId: string): Promise<UserAccess> {
   try {
     const headersList = headers();
     let userId: string | null = null;
@@ -13,11 +13,11 @@ async function getUserAccess(): Promise<UserAccess> {
       const token = await whopsdk.verifyUserToken(headersList);
       userId = token.userId;
     } catch {
-      return { hasPremiumAccess: false, isAdmin: false, userId: null, tier: "FREE" };
+      return { experienceId, hasPremiumAccess: false, isAdmin: false, userId: null, tier: "FREE" };
     }
 
     if (!userId) {
-      return { hasPremiumAccess: false, isAdmin: false, userId: null, tier: "FREE" };
+      return { experienceId, hasPremiumAccess: false, isAdmin: false, userId: null, tier: "FREE" };
     }
 
     let isAdmin = false;
@@ -52,14 +52,19 @@ async function getUserAccess(): Promise<UserAccess> {
     else if (accessMap["MAX_BET_POTD"]) tier = "MAX_BET_POTD";
     else if (accessMap["FREE"]) tier = "FREE";
 
-    return { hasPremiumAccess, isAdmin, userId, tier };
+    return { experienceId, hasPremiumAccess, isAdmin, userId, tier };
   } catch (error) {
     console.error("Error checking user access:", error);
-    return { hasPremiumAccess: false, isAdmin: false, userId: null, tier: "FREE" };
+    return { experienceId, hasPremiumAccess: false, isAdmin: false, userId: null, tier: "FREE" };
   }
 }
 
-export default async function Page() {
-  const userAccess = await getUserAccess();
+export default async function ExperiencePage({
+  params,
+}: {
+  params: Promise<{ experienceId: string }>;
+}) {
+  const { experienceId } = await params;
+  const userAccess = await getUserAccess(experienceId);
   return <StraightBetsClient userAccess={userAccess} />;
 }

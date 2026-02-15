@@ -32,10 +32,11 @@ export interface Play {
   result: BetResult;
   postedAt: string;
   units: number;
-  createdAt: number; // timestamp
+  createdAt: number;
 }
 
 export interface UserAccess {
+  experienceId?: string;
   hasPremiumAccess: boolean;
   isAdmin: boolean;
   userId: string | null;

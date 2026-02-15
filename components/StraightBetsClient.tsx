@@ -1030,8 +1030,8 @@ export default function StraightBetsClient({
               team: playData.team,
               odds: playData.odds,
               sport: playData.sport,
-              // Add your experience_id or company_id here
-              // experienceId: "exp_xxxxxxxx",
+              experienceId: userAccess.experienceId,
+              companyId: "biz_KfwlM1WObd2QW6",
             }),
           });
         } catch (err) {
