@@ -1295,7 +1295,7 @@ export default function StraightBetsClient({
               marginBottom: 4,
             }}
           >
-            <span style={{ color: "#f5f5f5" }}>Straight</span>
+            <span style={{ color: "#f5f5f5" }}>Par</span>
             <br />
             <span
               style={{
@@ -1305,7 +1305,7 @@ export default function StraightBetsClient({
                 WebkitTextFillColor: "transparent",
               }}
             >
-              Bets
+              lays
             </span>
           </h1>
 
@@ -1318,7 +1318,7 @@ export default function StraightBetsClient({
               lineHeight: 1.6,
             }}
           >
-            Every straight bet play, posted live.
+            Every parlay play, posted live.
           </p>
         </div>
 
