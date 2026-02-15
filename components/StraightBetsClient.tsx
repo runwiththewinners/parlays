@@ -1016,7 +1016,7 @@ export default function StraightBetsClient({
 }: {
   userAccess: UserAccess;
 }) {
-  const [plays, setPlays] = useState<Play[]>([]);
+  const [pParlays, setPlays] = useState<Play[]>([]);
   const [showAdmin, setShowAdmin] = useState(false);
   const [showGraded, setShowGraded] = useState(false);
   const [filter, setFilter] = useState("all");
@@ -1025,30 +1025,30 @@ export default function StraightBetsClient({
 
   const { hasPremiumAccess, isAdmin } = userAccess;
 
-  // Fetch plays on mount
-  const fetchPlays = useCallback(async () => {
+  // Fetch pParlays on mount
+  const fetchPParlays = useCallback(async () => {
     try {
-      const res = await fetch("/api/plays");
+      const res = await fetch("/api/pParlays");
       if (res.ok) {
         const data = await res.json();
-        setPlays(data.plays);
+        setPParlays(data.plays);
       }
     } catch (err) {
-      console.error("Error fetching plays:", err);
+      console.error("Error fetching pParlays:", err);
     }
     setLoading(false);
   }, []);
 
   useEffect(() => {
-    fetchPlays();
-    const interval = setInterval(fetchPlays, 30000);
+    fetchPParlays();
+    const interval = setInterval(fetchPParlays, 30000);
     return () => clearInterval(interval);
-  }, [fetchPlays]);
+  }, [fetchPParlays]);
 
   // Post a new play
   const handlePost = async (playData: any) => {
     try {
-      const res = await fetch("/api/plays", {
+      const res = await fetch("/api/pParlays", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(playData),
@@ -1056,7 +1056,7 @@ export default function StraightBetsClient({
 
       if (res.ok) {
         const data = await res.json();
-        setPlays((prev) => [data.play, ...prev]);
+        setPParlays((prev) => [data.play, ...prev]);
         setShowAdmin(false);
 
         // Send push notification
@@ -1086,14 +1086,14 @@ export default function StraightBetsClient({
   // Update play result
   const handleUpdateResult = async (id: string, result: BetResult) => {
     try {
-      const res = await fetch("/api/plays", {
+      const res = await fetch("/api/pParlays", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, result }),
       });
 
       if (res.ok) {
-        setPlays((prev) =>
+        setPParlays((prev) =>
           prev.map((p) => (p.id === id ? { ...p, result } : p))
         );
       }
@@ -1105,26 +1105,26 @@ export default function StraightBetsClient({
   // Delete play
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch("/api/plays", {
+      const res = await fetch("/api/pParlays", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),
       });
       if (res.ok) {
-        setPlays((prev) => prev.filter((p) => p.id !== id));
+        setPParlays((prev) => prev.filter((p) => p.id !== id));
       }
     } catch (err) {
       console.error("Error deleting play:", err);
     }
   };
 
-  const pendingPlays = plays.filter((p) => p.result === "pending");
-  const gradedPlays = plays.filter((p) => p.result !== "pending");
+  const pendingPParlays = plays.filter((p) => p.result === "pending");
+  const gradedPParlays = plays.filter((p) => p.result !== "pending");
 
   const record = {
-    wins: plays.filter((p) => p.result === "win").length,
-    losses: plays.filter((p) => p.result === "loss").length,
-    pushes: plays.filter((p) => p.result === "push").length,
+    wins: pParlays.filter((p) => p.result === "win").length,
+    losses: pParlays.filter((p) => p.result === "loss").length,
+    pushes: pParlays.filter((p) => p.result === "push").length,
   };
 
   return (
@@ -1295,7 +1295,7 @@ export default function StraightBetsClient({
               marginBottom: 4,
             }}
           >
-            <span style={{ color: "#f5f5f5" }}>Par</span>
+            
             
             <span
               style={{
@@ -1305,7 +1305,7 @@ export default function StraightBetsClient({
                 WebkitTextFillColor: "transparent",
               }}
             >
-              lays
+              Parlays
             </span>
           </h1>
 
@@ -1475,13 +1475,13 @@ export default function StraightBetsClient({
               fontSize: 14,
             }}
           >
-            Loading plays...
+            Loading pParlays...
           </div>
         ) : (
           <>
-            {/* Plays feed */}
+            {/* PParlays feed */}
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              {pendingPlays.length === 0 ? (
+              {pendingPParlays.length === 0 ? (
                 <div
                   style={{
                     textAlign: "center",
@@ -1490,10 +1490,10 @@ export default function StraightBetsClient({
                     fontSize: 14,
                   }}
                 >
-                  No plays to show for this filter.
+                  No pParlays to show for this filter.
                 </div>
               ) : hasPremiumAccess || isAdmin ? (
-                pendingPlays.map((play) => (
+                pendingPParlays.map((play) => (
                   <PlayCard
                     key={play.id}
                     play={play}
@@ -1503,14 +1503,14 @@ export default function StraightBetsClient({
                   />
                 ))
               ) : (
-                pendingPlays.map((play) => (
+                pendingPParlays.map((play) => (
                   <PaywallCard key={play.id} play={play} />
                 ))
               )}
             </div>
 
-            {/* Admin-only graded plays history */}
-            {isAdmin && gradedPlays.length > 0 && (
+            {/* Admin-only graded pParlays history */}
+            {isAdmin && gradedPParlays.length > 0 && (
               <div style={{ marginTop: 36 }}>
                 <button
                   onClick={() => setShowGraded(!showGraded)}
@@ -1534,7 +1534,7 @@ export default function StraightBetsClient({
                     gap: 10,
                   }}
                 >
-                  <span>📋 Graded Plays ({gradedPlays.length})</span>
+                  <span>📋 Graded PParlays ({gradedPlays.length})</span>
                   <span
                     style={{
                       transform: showGraded
@@ -1557,7 +1557,7 @@ export default function StraightBetsClient({
                       marginTop: 16,
                     }}
                   >
-                    {gradedPlays.map((play) => (
+                    {gradedPParlays.map((play) => (
                       <PlayCard
                         key={play.id}
                         play={play}
