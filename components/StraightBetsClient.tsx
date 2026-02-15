@@ -826,7 +826,7 @@ function AdminPanel({
                 }}
               >
                 Drop a screenshot from DraftKings, FanDuel, etc.
-                <br />
+                
                 AI will auto-fill the play details
               </div>
             </>
@@ -1296,7 +1296,7 @@ export default function StraightBetsClient({
             }}
           >
             <span style={{ color: "#f5f5f5" }}>Par</span>
-            <br />
+            
             <span
               style={{
                 background:
