@@ -1243,6 +1243,8 @@ export default function StraightBetsClient({
               marginBottom: 4,
             }}
           >
+            <span style={{ color: "#f5f5f5" }}>Par</span>
+            <br />
             <span
               style={{
                 background:
@@ -1251,7 +1253,7 @@ export default function StraightBetsClient({
                 WebkitTextFillColor: "transparent",
               }}
             >
-              Parlays
+              lays
             </span>
           </h1>
 
