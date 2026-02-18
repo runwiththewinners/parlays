@@ -24,7 +24,7 @@ export async function redisSet(key: string, value: any): Promise<void> {
       Authorization: "Bearer " + UPSTASH_TOKEN,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(JSON.stringify(value)),
+    body: JSON.stringify(value),
     cache: "no-store",
   });
 }
