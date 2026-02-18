@@ -81,7 +81,6 @@ export async function POST(request: NextRequest) {
     time: body.time,
     sport: body.sport,
     result: "pending" as BetResult,
-    units: body.units || 1,
     slipImage: body.slipImage || undefined,
     postedAt: new Date().toLocaleString("en-US", {
       month: "short", day: "numeric", hour: "numeric", minute: "2-digit",

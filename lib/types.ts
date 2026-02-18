@@ -31,7 +31,6 @@ export interface Play {
   sport: Sport;
   result: BetResult;
   postedAt: string;
-  units: number;
   createdAt: number;
   slipImage?: string;
 }
