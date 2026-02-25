@@ -636,14 +636,7 @@ export default function StraightBetsClient({ userAccess }: { userAccess: UserAcc
             marginBottom: 20, background: "rgba(212,168,67,0.06)", fontWeight: 700,
           }}>🎯 Live Feed</div>
 
-          <h1 style={{ fontSize: 48, fontFamily: "'Oswald', sans-serif", fontWeight: 800, lineHeight: 1, textTransform: "uppercase", marginBottom: 4 }}>
-            <span style={{ color: "#f5f5f5" }}>Parlay</span><br />
-            <span style={{ background: "linear-gradient(135deg, #b8860b, #d4a843, #f0d078)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Plays</span>
-          </h1>
 
-          <p style={{ fontSize: 13, color: "#6b7280", maxWidth: 380, margin: "12px auto 0", lineHeight: 1.6, fontFamily: "'Courier Prime', monospace" }}>
-            Multi-leg parlay plays, posted live.
-          </p>
         </div>
 
         {/* Record */}
