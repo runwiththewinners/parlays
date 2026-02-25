@@ -8,6 +8,7 @@ export async function redisGet(key: string): Promise<any> {
     cache: "no-store",
   });
   const data = await res.json();
+  console.log("Redis GET:", key, "result type:", typeof data.result, "length:", String(data.result || "").length);
   if (!data.result) return null;
   try {
     return JSON.parse(data.result);
@@ -18,13 +19,17 @@ export async function redisGet(key: string): Promise<any> {
 
 export async function redisSet(key: string, value: any): Promise<void> {
   const url = UPSTASH_URL + "/set/" + key;
-  await fetch(url, {
+  const body = JSON.stringify(value);
+  console.log("Redis SET:", key, "body length:", body.length);
+  const res = await fetch(url, {
     method: "POST",
     headers: {
       Authorization: "Bearer " + UPSTASH_TOKEN,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(JSON.stringify(value)),
+    body,
     cache: "no-store",
   });
+  const data = await res.json();
+  console.log("Redis SET response:", JSON.stringify(data));
 }
