@@ -336,11 +336,11 @@ function AdminPanel({ onPost, onClose }: { onPost: (play: any) => void; onClose:
         const data = await response.json();
         if (data.success && data.result) {
           const parsed = data.result;
-          if (parsed.team) updateLeg(0, "team", parsed.team);
-          if (parsed.betType) updateLeg(0, "betType", parsed.betType);
-          if (parsed.odds) updateLeg(0, "odds", parsed.odds);
-          if (parsed.matchup) updateLeg(0, "matchup", parsed.matchup);
-          if (parsed.sport) updateLeg(0, "sport", parsed.sport);
+          if (parsed.legs && parsed.legs.length > 0) {
+            setLegs(parsed.legs.map((l: any) => ({ team: l.team || '', betType: l.betType || 'SPREAD', odds: l.odds || '', matchup: l.matchup || '', sport: l.sport || 'NBA' })));
+          }
+          if (parsed.parlayOdds) setParlayOdds(parsed.parlayOdds);
+          if (parsed.units) setUnits(parsed.units);
         }
       } catch (err) {
         console.error("Scan error:", err);
