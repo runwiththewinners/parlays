@@ -138,15 +138,7 @@ function ParlayCard({
             marginBottom: 16, borderRadius: 12, overflow: "hidden",
             border: "1px solid rgba(212,168,67,0.1)", background: "rgba(0,0,0,0.4)", position: "relative",
           }}>
-            <span style={{
-              position: "absolute", top: 8, left: 8,
-              fontFamily: "'Courier Prime', monospace", fontSize: 9, fontWeight: 700,
-              letterSpacing: 1.5, textTransform: "uppercase", color: "#d4a843",
-              background: "rgba(0,0,0,0.8)", backdropFilter: "blur(8px)",
-              padding: "4px 10px", borderRadius: 6, border: "1px solid rgba(212,168,67,0.2)",
-            }}>
-              📋 VIEW SLIP
-            </span>
+
             <img src={play.slipImage} alt="Bet slip" style={{
               width: "100%", display: "block", maxHeight: 220, objectFit: "contain", background: "#0a0a0a",
             }} />
