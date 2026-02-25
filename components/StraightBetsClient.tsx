@@ -488,7 +488,7 @@ function AdminPanel({ onPost, onClose }: { onPost: (play: any) => void; onClose:
           </div>
         </div>
 
-        <button onClick={handlePost} disabled={!canPost} style={{
+        <button onClick={() => handlePost({ legs, parlayOdds, units, betSlipUrl: scanPreview || "" })} disabled={!canPost} style={{
           width: "100%", padding: "14px", borderRadius: 10,
           border: !canPost ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(212,168,67,0.4)",
           background: !canPost ? "rgba(255,255,255,0.03)" : "rgba(212,168,67,0.12)",
