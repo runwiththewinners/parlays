@@ -199,7 +199,7 @@ function ParlayCard({
 // ─── Paywall Card ────────────────────────────────────────────────
 function PaywallCard({ play }: { play: Play }) {
   const handleUpgrade = () => {
-    window.parent.postMessage({ type: "whop:navigate", productId: "prod_o1jjamUG8rP8W" }, "*");
+    window.open('https://whop.com/run-with-the-winners/?product=prod_o1jjamUG8rP8W', '_blank');
   };
   const legCount = play.legs?.length || 0;
 
@@ -682,7 +682,7 @@ export default function StraightBetsClient({ userAccess }: { userAccess: UserAcc
                     Upgrade to Premium or High Rollers to unlock all parlay picks, live notifications, and full bet slip access.
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 280, margin: '0 auto' }}>
-                    <button onClick={() => window.parent.postMessage({ type: 'whop:navigate', productId: 'prod_o1jjamUG8rP8W' }, '*')} style={{
+                    <button onClick={() => window.open('https://whop.com/run-with-the-winners/?product=prod_o1jjamUG8rP8W', '_blank')} style={{
                       padding: '14px 28px', borderRadius: 12, border: '1px solid rgba(212,168,67,0.5)',
                       background: 'linear-gradient(135deg, rgba(212,168,67,0.15), rgba(184,134,11,0.08))',
                       color: '#d4a843', fontSize: 14, fontFamily: "'Oswald', sans-serif",
@@ -690,7 +690,7 @@ export default function StraightBetsClient({ userAccess }: { userAccess: UserAcc
                     }}>
                       🏆 UPGRADE TO PREMIUM
                     </button>
-                    <button onClick={() => window.parent.postMessage({ type: 'whop:navigate', productId: 'prod_bNsUIqwSfzLzU' }, '*')} style={{
+                    <button onClick={() => window.open('https://whop.com/run-with-the-winners/?product=prod_bNsUIqwSfzLzU', '_blank')} style={{
                       padding: '14px 28px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.1)',
                       background: 'rgba(255,255,255,0.03)',
                       color: '#9ca3af', fontSize: 12, fontFamily: "'Oswald', sans-serif",
