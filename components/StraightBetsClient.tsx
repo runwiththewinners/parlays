@@ -97,7 +97,7 @@ function ParlayCard({
 
         {/* Legs */}
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
-          {play.legs?.map((leg, i) => (
+          {play.slipImage ? null : play.legs?.map((leg, i) => (
             <div key={i} style={{
               background: "rgba(212,168,67,0.03)",
               border: "1px solid rgba(212,168,67,0.1)",
