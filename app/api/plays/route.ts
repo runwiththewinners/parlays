@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     parlayOdds: body.parlayOdds || "",
     units: body.units || "1U",
     result: "pending" as BetResult,
-    // slipImage stripped to avoid Redis size limits
+    slipImage: body.slipImage || undefined,
     postedAt: new Date().toLocaleString("en-US", {
       month: "short", day: "numeric", hour: "numeric", minute: "2-digit",
       hour12: true, timeZone: "America/New_York",
