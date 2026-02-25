@@ -58,8 +58,14 @@ export async function GET(request: NextRequest) {
 
   const redacted = plays.map((p) => ({
     ...p,
-    team: "XXXXXXXXXX",
-    odds: "XXX",
+    legs: p.legs.map(() => ({
+      team: "XXXXXXXXXX",
+      betType: "SPREAD",
+      odds: "XXX",
+      matchup: "XXX vs XXX",
+      sport: "NBA",
+    })),
+    parlayOdds: "XXX",
     slipImage: undefined,
   }));
   return NextResponse.json({ plays: redacted, isAdmin: false });
@@ -74,12 +80,9 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const newPlay: Play = {
     id: `play_${Date.now()}`,
-    team: body.team,
-    betType: body.betType,
-    odds: body.odds,
-    matchup: body.matchup,
-    time: body.time,
-    sport: body.sport,
+    legs: body.legs || [],
+    parlayOdds: body.parlayOdds || "",
+    units: body.units || "1U",
     result: "pending" as BetResult,
     slipImage: body.slipImage || undefined,
     postedAt: new Date().toLocaleString("en-US", {

@@ -1,5 +1,4 @@
 export type BetResult = "pending" | "win" | "loss" | "push";
-
 export type Sport =
   | "NCAAB"
   | "NBA"
@@ -10,7 +9,6 @@ export type Sport =
   | "Soccer"
   | "UFC"
   | "Tennis";
-
 export type BetType =
   | "SPREAD"
   | "MONEYLINE"
@@ -21,17 +19,28 @@ export type BetType =
   | "FIRST HALF ML"
   | "GAME TOTAL";
 
+export interface Leg {
+  id: string;
+  player: string;
+  prop: string;
+  line: string;
+  matchup: string;
+  sport: Sport;
+}
+
 export interface Play {
   id: string;
   team: string;
-  betType: BetType;
+  betType: BetType | string;
   odds: string;
   matchup: string;
   time: string;
   sport: Sport;
   result: BetResult;
   postedAt: string;
+  units: number;
   createdAt: number;
+  legs?: Leg[];
   slipImage?: string;
 }
 
