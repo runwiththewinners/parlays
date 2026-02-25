@@ -514,10 +514,15 @@ export default function StraightBetsClient({ userAccess }: { userAccess: UserAcc
 
   const { hasPremiumAccess, isAdmin } = userAccess;
 
+  const migratePlay = (p: any): Play => {
+    if (p.legs) return p;
+    return { ...p, legs: [{ team: p.team || "", betType: p.betType || "SPREAD", odds: p.odds || "", matchup: p.matchup || "", sport: p.sport || "NBA" }], parlayOdds: p.odds || "", units: "1U" };
+  };
+
   const fetchPlays = useCallback(async () => {
     try {
       const res = await fetch("/api/plays");
-      if (res.ok) { const data = await res.json(); setPlays(data.plays); }
+      if (res.ok) { const data = await res.json(); setPlays((data.plays || []).map(migratePlay)); }
     } catch (err) { console.error("Error fetching plays:", err); }
     setLoading(false);
   }, []);
