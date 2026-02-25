@@ -73,16 +73,7 @@ function ParlayCard({
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            {play.units && (
-              <span style={{
-                fontSize: 11, fontFamily: "'Courier Prime', monospace",
-                color: "#d4a843", background: "rgba(212,168,67,0.1)",
-                border: "1px solid rgba(212,168,67,0.25)", borderRadius: 6,
-                padding: "3px 8px", fontWeight: 700,
-              }}>
-                {play.units}
-              </span>
-            )}
+
             <span style={{
               fontSize: 11, fontFamily: "'Courier Prime', monospace",
               color: isPending ? "#d4a843" : result.text,
