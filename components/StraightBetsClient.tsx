@@ -307,7 +307,7 @@ function AdminPanel({ onPost, onClose }: { onPost: (play: any) => void; onClose:
   const addLeg = () => setLegs(prev => [...prev, emptyLeg()]);
   const removeLeg = (index: number) => { if (legs.length > 2) setLegs(prev => prev.filter((_, i) => i !== index)); };
 
-  const canPost = legs.every(l => l.team && l.odds && l.matchup) && parlayOdds;
+  const canPost = legs.every(l => l.team && l.matchup) && parlayOdds;
 
   const handlePost = () => {
     if (!canPost) return;
