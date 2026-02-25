@@ -8,10 +8,14 @@ export async function redisGet(key: string): Promise<any> {
     cache: "no-store",
   });
   const data = await res.json();
-  console.log("Redis GET:", key, "result type:", typeof data.result, "length:", String(data.result || "").length);
   if (!data.result) return null;
   try {
-    return JSON.parse(data.result);
+    let parsed = JSON.parse(data.result);
+    // Handle double-stringified data from earlier bug
+    if (typeof parsed === "string") {
+      try { parsed = JSON.parse(parsed); } catch {}
+    }
+    return parsed;
   } catch {
     return data.result;
   }
@@ -19,17 +23,13 @@ export async function redisGet(key: string): Promise<any> {
 
 export async function redisSet(key: string, value: any): Promise<void> {
   const url = UPSTASH_URL + "/set/" + key;
-  const body = JSON.stringify(value);
-  console.log("Redis SET:", key, "body length:", body.length);
-  const res = await fetch(url, {
+  await fetch(url, {
     method: "POST",
     headers: {
       Authorization: "Bearer " + UPSTASH_TOKEN,
       "Content-Type": "application/json",
     },
-    body,
+    body: JSON.stringify(value),
     cache: "no-store",
   });
-  const data = await res.json();
-  console.log("Redis SET response:", JSON.stringify(data));
 }
