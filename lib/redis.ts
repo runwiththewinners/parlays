@@ -22,14 +22,18 @@ export async function redisGet(key: string): Promise<any> {
 }
 
 export async function redisSet(key: string, value: any): Promise<void> {
-  const url = UPSTASH_URL + "/set/" + key;
-  await fetch(url, {
+  const res = await fetch(UPSTASH_URL, {
     method: "POST",
     headers: {
       Authorization: "Bearer " + UPSTASH_TOKEN,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(JSON.stringify(value)),
+    body: JSON.stringify(["SET", key, JSON.stringify(value)]),
     cache: "no-store",
   });
+  if (!res.ok) {
+    const text = await res.text();
+    console.error("Redis SET failed:", res.status, text);
+    throw new Error(`Redis SET failed: ${res.status}`);
+  }
 }
