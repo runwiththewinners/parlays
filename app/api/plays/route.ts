@@ -4,6 +4,8 @@ import { COMPANY_ID, PREMIUM_TIERS } from "@/lib/constants";
 import { redisGet, redisSet } from "@/lib/redis";
 import type { Play, BetResult } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 const PLAYS_KEY = "parlays:plays";
 
 async function getPlays(): Promise<Play[]> {
@@ -77,25 +79,30 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Admin access required" }, { status: 403 });
   }
 
-  const body = await request.json();
-  const newPlay: Play = {
-    id: `play_${Date.now()}`,
-    legs: body.legs || [],
-    parlayOdds: body.parlayOdds || "",
-    units: body.units || "1U",
-    result: "pending" as BetResult,
-    slipImage: body.slipImage || undefined,
-    postedAt: new Date().toLocaleString("en-US", {
-      month: "short", day: "numeric", hour: "numeric", minute: "2-digit",
-      hour12: true, timeZone: "America/New_York",
-    }) + " ET",
-    createdAt: Date.now(),
-  };
+  try {
+    const body = await request.json();
+    const newPlay: Play = {
+      id: `play_${Date.now()}`,
+      legs: body.legs || [],
+      parlayOdds: body.parlayOdds || "",
+      units: body.units || "1U",
+      result: "pending" as BetResult,
+      slipImage: body.slipImage || undefined,
+      postedAt: new Date().toLocaleString("en-US", {
+        month: "short", day: "numeric", hour: "numeric", minute: "2-digit",
+        hour12: true, timeZone: "America/New_York",
+      }) + " ET",
+      createdAt: Date.now(),
+    };
 
-  const plays = await getPlays();
-  plays.unshift(newPlay);
-  await savePlays(plays);
-  return NextResponse.json({ play: newPlay, success: true });
+    const plays = await getPlays();
+    plays.unshift(newPlay);
+    await savePlays(plays);
+    return NextResponse.json({ play: newPlay, success: true });
+  } catch (err) {
+    console.error("POST /api/plays error:", err);
+    return NextResponse.json({ error: "Failed to save play" }, { status: 500 });
+  }
 }
 
 export async function PATCH(request: NextRequest) {
